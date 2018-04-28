@@ -1,16 +1,31 @@
+import ntpath
 import sys
 
 import redis
 
-r = redis.StrictRedis(host="localhost", port="6379", db=0)
+r = redis.StrictRedis(host="localhost", port="6379", db=0)  # membuat koneksi ke redis
 
 
+# fungsi untuk mempublish event ke redis server
 def publish(redis_instance, t):
     redis_instance.publish("news_channel", t)
 
 
-title = sys.argv[1]
+# fungsi untuk mendapat kan nama file dari path file
+def path_leaf(path):
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
 
-r.rpush("news", title)
+
+# dapatkan argumen no 1
+filepath = sys.argv[1]
+
+title = path_leaf(filepath)
+
+r.set("news", title)  # save judul file ke redis
+
+f = open(filepath, 'rb').read()  # baca isi dari file
+
+r.set('file', f)  # simpan isi file ke redis
 
 publish(r, title)

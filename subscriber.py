@@ -3,24 +3,33 @@ import redis
 r = redis.StrictRedis(host="localhost", port="6379", db=0)
 
 
-def displaymesages():
-    coll = r.lrange("news", 0, -1)
-    idx = 1
-    for n in coll:
-        print("%d %s" % (idx, n.decode('utf-8')))
-        idx += 1
+# fungsi untuk mendownload file
+def download_file(t):
+    file = r.get('file')
+    f = open("%s-client.txt" % t.decode('utf-8'), 'wb')
+    f.write(file)
+    f.close()
 
 
-displaymesages()
-pubsub = r.pubsub()
+title = r.get("news")  # dapatkan judul file
+print("berita yang tersedia: %s" % title.decode('utf-8'))
+print()
+download = input("download file? y/n - ")
+
+if download is 'y':
+    download_file(title)
+
+pubsub = r.pubsub()  # object pubsub redis
 
 try:
-    pubsub.subscribe(["news_channel"])
+    pubsub.subscribe(["news_channel"])  # subscribe topik pada redsi
     while True:
-        for message in pubsub.listen():
-            if message['data'] != 1:
+        for message in pubsub.listen():  # looping akan berhenti hingga ada message baru
+            if message['data'] != 1:  # check data != 1
                 print("berita baru: %s" % message['data'].decode('utf-8'))
-                displaymesages()
+                print()
+                if input("download file? y/n") is 'y':
+                    download_file(title)
 except KeyboardInterrupt:
     pubsub.close()
     print("exiting")
