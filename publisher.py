@@ -3,6 +3,9 @@ import sys
 
 import redis
 
+# cara mempublish file: python publisher.py [judul berita] [file berita]
+# contoh: python publisher.py 'judul berita' berita.txt
+
 r = redis.StrictRedis(host="localhost", port="6379", db=0)  # membuat koneksi ke redis
 
 
@@ -17,10 +20,11 @@ def path_leaf(path):
     return tail or ntpath.basename(head)
 
 
-# dapatkan argumen no 1
-filepath = sys.argv[1]
+# title pada argumen no 1
+title = sys.argv[1]
 
-title = path_leaf(filepath)
+# dapatkan argumen no 2
+filepath = sys.argv[2]
 
 r.set("news", title)  # save judul file ke redis
 
