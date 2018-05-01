@@ -28,7 +28,8 @@ try:
             if message['data'] != 1:  # check data != 1
                 print("berita baru: %s" % message['data'].decode('utf-8'))
                 print()
-                if input("download file? y/n") is 'y':
+                if input("download file? y/n - ") is 'y':
+                    title = r.get("news")
                     download_file(title)
 except KeyboardInterrupt:
     pubsub.close()

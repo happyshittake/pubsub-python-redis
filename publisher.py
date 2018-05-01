@@ -1,5 +1,5 @@
 import ntpath
-import sys
+import os
 
 import redis
 
@@ -20,16 +20,35 @@ def path_leaf(path):
     return tail or ntpath.basename(head)
 
 
-# title pada argumen no 1
-title = sys.argv[1]
+def prompt_upload():
+    # title pada argumen no 1
+    title = input("masukkan judul file: ")
 
-# dapatkan argumen no 2
-filepath = sys.argv[2]
+    if title is None:
+        print("penggunaan: python publisher.py [judul file] [file yang akan diupload]")
+        exit(1)
 
-r.set("news", title)  # save judul file ke redis
+    # dapatkan argumen no 2
+    filepath = input("masukkan file yang akan diupload: ")
 
-f = open(filepath, 'rb').read()  # baca isi dari file
+    if filepath is None:
+        print("harus ada file yang akan diupload")
+        exit(1)
 
-r.set('file', f)  # simpan isi file ke redis
+    dir_path = os.path.dirname(os.path.realpath(__file__))
 
-publish(r, title)
+    r.set("news", title)  # save judul file ke redis
+
+    f = open(dir_path + "/" + filepath, 'rb').read()  # baca isi dari file
+
+    r.set('file', f)  # simpan isi file ke redis
+
+    publish(r, title)
+
+
+prompt_upload()
+
+re = input("apakah anda mau upload lagi? y/n - ")
+
+while re is not 'n':
+    prompt_upload()
