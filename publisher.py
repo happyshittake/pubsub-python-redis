@@ -49,8 +49,8 @@ def prompt_upload():
 
 
 prompt_upload()
-
 re = input("apakah anda mau upload lagi? y/n - ")
 
 while re is not 'n':
     prompt_upload()
+    re = input("apakah anda mau upload lagi? y/n - ")
