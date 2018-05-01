@@ -9,6 +9,7 @@ def download_file(t):
     f = open("%s-client.txt" % t.decode('utf-8'), 'wb')
     f.write(file)
     f.close()
+    print("file berhasi didownload")
 
 
 title = r.get("news")  # dapatkan judul file

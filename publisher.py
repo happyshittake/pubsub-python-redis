@@ -45,6 +45,8 @@ def prompt_upload():
 
     publish(r, title)
 
+    print("file berhasil di upload")
+
 
 prompt_upload()
 
